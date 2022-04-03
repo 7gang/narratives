@@ -1,0 +1,18 @@
+{
+    "name": "PPSAssemblyDefinition",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1fbf338ef6b952a448262a7ff7df5fe4",
+        "GUID:86fc059b34f77fb4ea39151acc8bc080",
+        "GUID:0dd781c8e989a044597fb62134273aa2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
