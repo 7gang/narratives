@@ -23,6 +23,11 @@ public class Level : MonoBehaviour
         this.SetVisibilityOfAllChildren(false);
     }
 
+    protected void Start()
+    {
+        if (this.isFirstLevel) this.Activate();
+    }
+
     /*
      * Set visibility of all child GameObjects
      */
@@ -54,7 +59,7 @@ public class Level : MonoBehaviour
     }
 
     /*
-     * Toggles Renderer- and Collider components in all children of this Level
+     * Toggle Renderer- and Collider components in all children of this Level
      */
     public void SetVisibilityOfAllChildren(bool isVisible)
     {
@@ -64,7 +69,7 @@ public class Level : MonoBehaviour
     }
 
     /*
-     * Activates this Level
+     * Activate this Level
      */
     public void Activate()
     {
@@ -87,7 +92,7 @@ public class Level : MonoBehaviour
     }
 
     /*
-     * Activates this Level through Level.Activate()
+     * Activate this Level through Level.Activate()
      */
     public void Activate(Prompt p)
     {
