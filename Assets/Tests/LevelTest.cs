@@ -35,6 +35,7 @@ public class LevelTest
         testPromptObject2.transform.parent = testLevelObject2.transform;
         this.testPrompt2 = testPromptObject2.AddComponent<Prompt>();
         this.testLevel2.entryPrompt = testPrompt2;
+        this.testPrompt.OnResolve.AddListener(p => this.testLevel2.Activate(p));
 
         // test Level 3
         GameObject testLevelObject3 = new GameObject("Level3");
@@ -43,20 +44,22 @@ public class LevelTest
         testPromptObject3.transform.parent = testLevelObject3.transform;
         this.testPrompt3 = testPromptObject3.AddComponent<Prompt>();
         this.testLevel3.entryPrompt = testPrompt3;
+        this.testPrompt2.OnResolve.AddListener(p => this.testLevel3.Activate(p));
 
         // audio source must be added manually in testing, even though it is done through the editor
         testPrompt.gameObject.AddComponent<AudioSource>();
         testPrompt2.gameObject.AddComponent<AudioSource>();
         testPrompt3.gameObject.AddComponent<AudioSource>();
 
-        this.testLevel.Complete();
+        this.testLevel.Activate();
     }
 
     [TearDown]
     public void Teardown()
     {
-        Prompt.ResolveAll();
-        Level.activeLevelIndex = -1;
+        this.testLevel.Complete();
+        this.testLevel2.Complete();
+        this.testLevel3.Complete();
 
         Object.DestroyImmediate(testLevel.gameObject);  // running DestroyImmediate is ok since we're testing in edit mode and >should< also destroy child objects... hopefully...
         Object.DestroyImmediate(testLevel2.gameObject);
@@ -105,7 +108,7 @@ public class LevelTest
         Prompt prompt = this.testLevel.gameObject.GetComponentInChildren<Prompt>();
         NUnit.Framework.Assert.True(this.testLevel.isActive);
         NUnit.Framework.Assert.True(prompt.IsActive());
-        this.testLevel.Complete();
+        this.testLevel2.Activate();
         NUnit.Framework.Assert.False(prompt.IsActive());
     }
 
@@ -120,7 +123,7 @@ public class LevelTest
         NUnit.Framework.Assert.True(this.testPrompt.GetComponent<Renderer>().enabled);
         NUnit.Framework.Assert.True(this.testPrompt.GetComponent<Collider>().enabled);
 
-        this.testLevel.Complete();                                  // assumes the queue ordering of Levels are correct!
+        this.testLevel2.Activate();
         NUnit.Framework.Assert.False(this.testPrompt.IsActive());   // assumes the activation of child prompts works!
         NUnit.Framework.Assert.False(this.testPrompt.GetComponent<Renderer>().enabled);
         NUnit.Framework.Assert.False(this.testPrompt.GetComponent<Collider>().enabled);
@@ -139,17 +142,17 @@ public class LevelTest
         NUnit.Framework.Assert.False(this.testPrompt2.GetComponent<Renderer>().enabled);
         NUnit.Framework.Assert.False(this.testPrompt2.GetComponent<Collider>().enabled);
 
-        this.testLevel.Complete();                                  // assumes the queue ordering of Levels are correct!
+        this.testLevel2.Activate();
         NUnit.Framework.Assert.True(this.testPrompt2.IsActive());   // assumes the activation of child prompts works!
         NUnit.Framework.Assert.True(this.testPrompt2.GetComponent<Renderer>().enabled);
         NUnit.Framework.Assert.True(this.testPrompt2.GetComponent<Collider>().enabled);
     }
 
-    [Test]
+    /*[Test]
     public void DoesNotReEnableCertainSubRenderersAndColliders()
     {
         // setup objects with InteractionTarget and Task, and a child with a renderer or collider
-        /*this.testPrompt2.gameObject.AddComponent<InteractionTarget>();
+        this.testPrompt2.gameObject.AddComponent<InteractionTarget>();
         this.testPrompt3.gameObject.AddComponent<Task>();
         this.testPrompt3.GetComponent<Task>().hideUntilActive = true;
 
@@ -174,8 +177,8 @@ public class LevelTest
         NUnit.Framework.Assert.False(this.testPrompt3.GetComponentInChildren<Collider>().enabled);
         this.testLevel2.Complete();
         NUnit.Framework.Assert.True(this.testPrompt3.IsActive());
-        NUnit.Framework.Assert.False(this.testPrompt3.GetComponentInChildren<Collider>().enabled);*/
-    }
+        NUnit.Framework.Assert.False(this.testPrompt3.GetComponentInChildren<Collider>().enabled);
+    }*/
 
     [Test]
     public void MaintainsLevelOrder()
@@ -184,22 +187,38 @@ public class LevelTest
         Level level2 = this.testLevel2.GetComponent<Level>();
         Level level3 = this.testLevel3.GetComponent<Level>();
 
-        NUnit.Framework.Assert.AreEqual(Level.activeLevel.name, this.testLevel.name);
+        NUnit.Framework.Assert.AreEqual(level1.name, Level.activeLevel.name);
         NUnit.Framework.Assert.True(level1.isActive);
         NUnit.Framework.Assert.False(level2.isActive);
         NUnit.Framework.Assert.False(level3.isActive);
-        
-        this.testLevel.Complete();
-        NUnit.Framework.Assert.AreEqual(Level.activeLevel.name, this.testLevel2.name);
-        NUnit.Framework.Assert.False(level1.isActive);
-        NUnit.Framework.Assert.True(level2.isActive);
-        NUnit.Framework.Assert.False(level3.isActive);
 
-        this.testLevel2.Complete();
-        NUnit.Framework.Assert.AreEqual(Level.activeLevel.name, this.testLevel3.name);
-        NUnit.Framework.Assert.False(level1.isActive);
-        NUnit.Framework.Assert.False(level2.isActive);
-        NUnit.Framework.Assert.True(level3.isActive);
+        //ManualResetEvent mre1 = new ManualResetEvent(false);
+        //ManualResetEvent mre2 = new ManualResetEvent(false);
+
+        this.testPrompt2.OnActive.AddListener(p =>
+        {
+            NUnit.Framework.Assert.AreEqual(level2.name, Level.activeLevel.name);
+            NUnit.Framework.Assert.False(level1.isActive);
+            NUnit.Framework.Assert.True(level2.isActive);
+            NUnit.Framework.Assert.False(level3.isActive);
+
+            //mre1.Set();
+        });
+        level2.Activate();
+
+        this.testPrompt3.OnActive.AddListener(p =>
+        {
+            NUnit.Framework.Assert.AreEqual(level3.name, Level.activeLevel.name);
+            NUnit.Framework.Assert.False(level1.isActive);
+            NUnit.Framework.Assert.False(level2.isActive);
+            NUnit.Framework.Assert.True(level3.isActive);
+
+            //mre2.Set();
+        });
+        level3.Activate();
+
+        //Assert.True(mre1.WaitOne(System.TimeSpan.FromSeconds(1)));
+        //Assert.True(mre2.WaitOne(System.TimeSpan.FromSeconds(1)));
     }
 
     [Test]
@@ -209,14 +228,20 @@ public class LevelTest
         NUnit.Framework.Assert.False(this.testPrompt2.IsActive());
         NUnit.Framework.Assert.False(this.testPrompt3.IsActive());
 
-        this.testLevel.Complete();
-        NUnit.Framework.Assert.False(this.testPrompt.IsActive());
-        NUnit.Framework.Assert.True(this.testPrompt2.IsActive());
-        NUnit.Framework.Assert.False(this.testPrompt3.IsActive());
+        this.testPrompt2.OnActive.AddListener(p =>
+        {
+            NUnit.Framework.Assert.False(this.testPrompt.IsActive());
+            NUnit.Framework.Assert.True(this.testPrompt2.IsActive());
+            NUnit.Framework.Assert.False(this.testPrompt3.IsActive());
+        });
+        this.testLevel2.Activate();
 
-        this.testLevel.Complete();
-        NUnit.Framework.Assert.False(this.testPrompt.IsActive());
-        NUnit.Framework.Assert.False(this.testPrompt2.IsActive());
-        NUnit.Framework.Assert.True(this.testPrompt3.IsActive());
+        this.testPrompt2.OnActive.AddListener(p =>
+        {
+            NUnit.Framework.Assert.False(this.testPrompt.IsActive());
+            NUnit.Framework.Assert.False(this.testPrompt2.IsActive());
+            NUnit.Framework.Assert.True(this.testPrompt3.IsActive());
+        });
+        this.testLevel3.Activate();
     }
 }

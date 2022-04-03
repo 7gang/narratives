@@ -8,79 +8,19 @@ using System.Linq;
 
 public class Level : MonoBehaviour
 {
-    [Tooltip("The first Prompt to be activated when the level is loaded.")]
+    [Tooltip("The first Prompt to be activated when the level is loaded. This should never be null.")]
     public Prompt entryPrompt;
+    [Tooltip("If true, this Level will activate as the first Level in the game on startup.")]
+    public bool isFirstLevel = false;
 
     [HideInInspector]
     public bool isActive;
     [HideInInspector]
     public static Level activeLevel;
-    [HideInInspector]
-    public static int activeLevelIndex = -1;
-
-    private static Level[] levelsInScene = new Level[3];
-    private static bool firstLevelStarted = false;
 
     private void OnEnable()
     {
         this.SetVisibilityOfAllChildren(false);
-    }
-
-    protected void Start()
-    {
-        if (!Level.firstLevelStarted)
-            Level.Continue();
-    }
-
-    private static Level[] getLevelsInScene(Scene scene)
-    {
-        if (Level.levelsInScene[0] == null)
-        {
-            // find all Level components in the Scene
-            IEnumerator ie = scene.GetRootGameObjects().GetEnumerator();
-            ie.Reset();
-            while (ie.MoveNext())
-            {
-                GameObject currentObject = (GameObject)ie.Current;
-                if (currentObject != null && currentObject.GetComponent<Level>())
-                    //levelsInScene.Add(currentObject.GetComponent<Level>());
-                    switch (currentObject.name)
-                    {
-                        case "Level1":
-                            Level.levelsInScene[0] = currentObject.GetComponent<Level>();
-                            break;
-                        case "Level2":
-                            Level.levelsInScene[1] = currentObject.GetComponent<Level>();
-                            break;
-                        case "Level3":
-                            Level.levelsInScene[2] = currentObject.GetComponent<Level>();
-                            break;
-                    }
-            }
-        }
-        return Level.levelsInScene;
-    }
-
-    /*
-     * Continue to the next Level after completing the current activeLevel
-     */
-    private static void Continue()
-    {
-        if (!Level.firstLevelStarted)
-        {
-            Logger.Log(Classifier.Level.Unloaded, Level.activeLevel);
-            Level.firstLevelStarted = true;
-        }
-
-        Scene scene = SceneManager.GetActiveScene();
-        
-        Level.activeLevelIndex++;
-        
-        Logger.Log(Classifier.Level.Loaded, Level.activeLevel);
-        if (!Level.firstLevelStarted) Debug.Log("Active Level is now " + Level.activeLevel.name + " in Scene " + scene.name);
-
-        // activate the new activeLevel
-        Level.getLevelsInScene(scene)[Level.activeLevelIndex].Activate();
     }
 
     /*
@@ -128,12 +68,30 @@ public class Level : MonoBehaviour
      */
     public void Activate()
     {
+        if (Level.activeLevel != null)
+        {
+            Level.activeLevel.Complete();
+            Logger.Log(Classifier.Level.Unloaded, Level.activeLevel);
+            
+            Scene scene = SceneManager.GetActiveScene();
+            Debug.Log("Active Level is now " + Level.activeLevel.name + " in Scene " + scene.name);
+        }
+
         Level.activeLevel = this;
         this.SetVisibilityOfAllChildren(true);
         if (entryPrompt != null) entryPrompt.Activate();
         else Debug.LogError(this + " was activated but no initial Prompt was given. Did you foget to reference the entry Prompt?");
+        Logger.Log(Classifier.Level.Loaded, Level.activeLevel);
 
         Logger.Log(Classifier.Level.Started, this);
+    }
+
+    /*
+     * Activates this Level through Level.Activate()
+     */
+    public void Activate(Prompt p)
+    {
+        this.Activate();
     }
 
     /*
@@ -147,9 +105,6 @@ public class Level : MonoBehaviour
 
         this.SetVisibilityOfAllChildren(false);
         Logger.Log(Classifier.Level.Completed, this);
-
-        // run preloaded scene
-        Level.Continue();
     }
 
     /*
