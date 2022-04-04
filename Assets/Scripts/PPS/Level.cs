@@ -105,8 +105,7 @@ public class Level : MonoBehaviour
     public void Complete()
     {
         // resolve all unresolved prompts as "unsuccessful" before continuing
-        foreach (Prompt ap in new List<Prompt>(Prompt.activePrompts))
-            ap.Resolve(false);
+        Prompt.ResolveAll();
 
         this.SetVisibilityOfAllChildren(false);
         Logger.Log(Classifier.Level.Completed, this);
