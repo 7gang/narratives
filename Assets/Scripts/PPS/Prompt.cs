@@ -8,6 +8,8 @@ using UnityEngine.Events;
 public class ActiveEvent : UnityEvent<Prompt> { }
 [Serializable]
 public class ResolveEvent : UnityEvent<Prompt> { }
+[Serializable]
+public class PlayEvent : UnityEvent<Prompt> { }
 
 /**
  * The base class for audio/visual Player signalling and communications
@@ -36,6 +38,8 @@ public class Prompt : MonoBehaviour
     public ActiveEvent OnActive = new ActiveEvent();
     [Tooltip("Invoked whenever this Prompt is resolved. This could be if you want another Prompt to fire after this one is done!")]
     public ResolveEvent OnResolve = new ResolveEvent();
+    [Tooltip("Invoked whenever this Prompt is played (not just activated). This is when the delay between activation and playback has transpired (0 by default)!")]
+    public PlayEvent OnPlay = new PlayEvent();
 
     [HideInInspector]
     public static List<Prompt> activePrompts = new List<Prompt>();  // enumerating the raw List is discouraged, as asynchronous modification can occur
@@ -80,7 +84,7 @@ public class Prompt : MonoBehaviour
     {
         // copy activePrompts to protect from asynchronous modification during enumeration
         List<Prompt> activePromptsCopy = new List<Prompt>(activePrompts);
-        foreach (Prompt p in activePromptsCopy) p.Resolve();
+        foreach (Prompt p in activePromptsCopy) p.Resolve(false);
     }
 
     /*
@@ -184,6 +188,8 @@ public class Prompt : MonoBehaviour
             yield return new WaitForSeconds(delayTime);
             if (this.IsActive())
             {
+                this.OnPlay.Invoke(this);
+
                 PlaySound();
             }
         }

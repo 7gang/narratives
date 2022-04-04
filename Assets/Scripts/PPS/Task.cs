@@ -122,10 +122,10 @@ public class Task : Prompt
         Logger.Log(Classifier.Task.Released, this);
     }
 
-    public new void Resolve()
+    public new void Resolve(bool successful = true)
     {
         if (this.target)
-            this.target.Resolve();
+            this.target.Resolve(successful);
 
         this.GetComponent<Rigidbody>().isKinematic = false;
         this.GetComponent<FriendlyInteractable>().enabled = false;
@@ -135,7 +135,7 @@ public class Task : Prompt
         Rigidbody localRigidbody = this.GetComponent<Rigidbody>();
         localRigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
-        base.Resolve();
+        base.Resolve(successful);
     }
 
     public void Show()
