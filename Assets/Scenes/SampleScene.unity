@@ -10615,6 +10615,9 @@ MonoBehaviour:
   secondsWaitAfterPlay: 1.5
   OnActive:
     m_PersistentCalls:
+      m_Calls: []
+  OnResolve:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1711414194}
         m_TargetAssemblyTypeName: Prompt, PPSAssemblyDefinition
@@ -10628,9 +10631,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnResolve:
-    m_PersistentCalls:
-      m_Calls: []
   OnPlay:
     m_PersistentCalls:
       m_Calls: []
