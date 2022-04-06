@@ -34,11 +34,6 @@ public class Flickering : MonoBehaviour
     /// this, deactivating/reactivating is usually fine but if you want a strict
     /// restart you can do.
     /// </summary>
-    public void Reset()
-    {
-        smoothQueue.Clear();
-        lastSum = 0;
-    }
 
     void Start()
     {
