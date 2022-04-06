@@ -11045,10 +11045,10 @@ MonoBehaviour:
   promptName: An Awesome Prompt
   promptText: 
   audioClip: {fileID: 8300000, guid: 9e6dc9273feebef4badc791c2ff9cad9, type: 3}
-  playbackVolume: 0.2
-  isOmnidirectional: 0
+  playbackVolume: 0.4
+  isOmnidirectional: 1
   isLooping: 0
-  secondsWaitAfterPlay: 1.5
+  secondsWaitAfterPlay: 0
   OnActive:
     m_PersistentCalls:
       m_Calls: []
@@ -13545,6 +13545,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 107946, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 107946, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+      propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
@@ -17515,7 +17519,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &908475809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22380,10 +22384,10 @@ MonoBehaviour:
   promptName: An Awesome Prompt
   promptText: 
   audioClip: {fileID: 8300000, guid: 55d13df1325063e409bf20def7dee334, type: 3}
-  playbackVolume: 0.2
-  isOmnidirectional: 0
+  playbackVolume: 1.5
+  isOmnidirectional: 1
   isLooping: 0
-  secondsWaitAfterPlay: 0.5
+  secondsWaitAfterPlay: 0
   OnActive:
     m_PersistentCalls:
       m_Calls: []
@@ -29224,8 +29228,8 @@ MonoBehaviour:
   promptName: An Awesome Prompt
   promptText: 
   audioClip: {fileID: 8300000, guid: 60ca0ddf4a64cf846b26d10f136deff7, type: 3}
-  playbackVolume: 0.2
-  isOmnidirectional: 0
+  playbackVolume: 1.5
+  isOmnidirectional: 1
   isLooping: 0
   secondsWaitAfterPlay: 0.5
   OnActive:
@@ -32990,7 +32994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1782271299
 Transform:
   m_ObjectHideFlags: 0
