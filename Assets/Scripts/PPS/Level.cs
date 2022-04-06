@@ -77,17 +77,26 @@ public class Level : MonoBehaviour
         {
             Level.activeLevel.Complete();
             Logger.Log(Classifier.Level.Unloaded, Level.activeLevel);
-            
-            Scene scene = SceneManager.GetActiveScene();
-            Debug.Log("Active Level is now " + Level.activeLevel.name + " in Scene " + scene.name);
         }
 
         Level.activeLevel = this;
         this.SetVisibilityOfAllChildren(true);
-        if (entryPrompt != null) entryPrompt.Activate();
-        else Debug.LogError(this + " was activated but no initial Prompt was given. Did you foget to reference the entry Prompt?");
-        Logger.Log(Classifier.Level.Loaded, Level.activeLevel);
 
+        Scene scene = SceneManager.GetActiveScene();
+        Debug.Log("Active Level is now " + Level.activeLevel.name + " in Scene " + scene.name);
+
+        // activate the entryPrompt if given, otherwise quit the game
+        if (entryPrompt != null)
+        {
+            entryPrompt.Activate();
+        }
+        else
+        {
+            Debug.LogError(this + " was activated but no entry Prompt was provided. Assuming this is the end of the game...");
+            Application.Quit();
+        }
+
+        Logger.Log(Classifier.Level.Loaded, Level.activeLevel);
         Logger.Log(Classifier.Level.Started, this);
     }
 
