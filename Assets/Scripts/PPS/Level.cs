@@ -73,6 +73,7 @@ public class Level : MonoBehaviour
      */
     public void Activate()
     {
+        // resolve the previous activeLevel before continuing
         if (Level.activeLevel != null)
         {
             Level.activeLevel.Complete();
@@ -95,6 +96,16 @@ public class Level : MonoBehaviour
             Debug.LogError(this + " was activated but no entry Prompt was provided. Assuming this is the end of the game...");
             Application.Quit();
         }
+
+        // reset player position and orientation
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        Transform spawnPointTransform = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+        playerObject.transform.position = new Vector3(
+            spawnPointTransform.position.x,
+            playerObject.transform.position.y,
+            spawnPointTransform.position.z
+        );
+        playerObject.transform.rotation = spawnPointTransform.rotation;
 
         Logger.Log(Classifier.Level.Loaded, Level.activeLevel);
         Logger.Log(Classifier.Level.Started, this);
