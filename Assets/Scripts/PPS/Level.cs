@@ -44,6 +44,8 @@ public class Level : MonoBehaviour
                 node.GetComponent<Renderer>().enabled = isVisible;
             if (node.GetComponent<Collider>() != null)
                 node.GetComponent<Collider>().enabled = isVisible;
+            if (node.GetComponent<Light>() != null)
+                node.GetComponent<Light>().enabled = isVisible;
         }
 
         for (int i = 0; i < node.transform.childCount; i++)
@@ -56,6 +58,8 @@ public class Level : MonoBehaviour
 
         if (node.GetComponent<Canvas>() != null)
             node.GetComponent<Canvas>().enabled = isVisible;
+        if (node.GetComponent<Light>() != null)
+            node.GetComponent<Light>().enabled = isVisible;
     }
 
     /*
