@@ -35477,7 +35477,7 @@ MonoBehaviour:
       m_Calls: []
   isGlovingImmidiately: 1
   hideUntilActive: 0
-  target: {fileID: 0}
+  target: {fileID: 1989560254}
   targetPrecision: 0.2
   matchRotation: 0
   hideAfterCompletion: 1
@@ -37160,7 +37160,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1989560252}
   m_LocalRotation: {x: -0, y: -0.86089635, z: -0, w: 0.50878036}
-  m_LocalPosition: {x: -0.4296, y: -1.089, z: 0.7063}
+  m_LocalPosition: {x: -0.4296, y: -1.51, z: 0.7063}
   m_LocalScale: {x: 11.013911, y: 1.2216935, z: 20.947401}
   m_Children: []
   m_Father: {fileID: 1406034396}
